@@ -247,4 +247,37 @@ class MavenPublishBasicIntegTest extends AbstractMavenPublishIntegTest {
         failure.assertHasDescription("A problem occurred configuring root project 'bad-project'.")
         failure.assertHasCause("Publication with name 'mavenJava' already exists")
     }
+
+    def "asks the user to activate the stable publishing feature preview"() {
+
+        given:
+        settingsFile << "rootProject.name = 'root'"
+        buildFile << """
+            apply plugin: 'maven-publish'
+        """
+
+        when:
+        succeeds("help")
+
+        then:
+        outputContains("we are removing the 'deferred configurable' behavior")
+    }
+
+    def "no warning if the user already activated the stable feature preview"() {
+
+        given:
+        settingsFile << """
+            rootProject.name = 'root'
+            enableFeaturePreview('STABLE_PUBLISHING')
+        """
+        buildFile << """
+            apply plugin: 'maven-publish'
+        """
+
+        when:
+        succeeds("help")
+
+        then:
+        outputDoesNotContain("we are removing the 'deferred configurable' behavior")
+    }
 }
