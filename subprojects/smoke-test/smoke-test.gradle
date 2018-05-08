@@ -47,6 +47,7 @@ processSmokeTestResources {
 }
 
 tasks.create('smokeTest', SmokeTest) { SmokeTest task ->
+    dependsOn(':cleanUpCaches')
     group = "Verification"
     description = "Runs Smoke tests"
     testClassesDirs = sourceSets.smokeTest.output.classesDirs
